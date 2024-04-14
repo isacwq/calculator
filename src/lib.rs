@@ -9,11 +9,11 @@ create_exception!(calculator, ZeroDivisionError, PyException);
 ///
 /// When the args is empty, return the 0.0.
 /// When the args length is 1, return the first value.
-#[pyfunction(args = "*")]
-#[pyo3(text_signature = "(*args)")]
-fn add(args: &PyTuple) -> f64 {
+#[pyfunction]
+#[pyo3(signature = (*py_args))]
+fn add(py_args: &PyTuple) -> f64 {
     let mut result: f64 = 0.0;
-    for item in args.as_slice() {
+    for item in py_args.as_slice() {
         result += item.extract::<f64>().unwrap();
     }
     return result;
@@ -23,17 +23,17 @@ fn add(args: &PyTuple) -> f64 {
 ///
 /// When the args is empty, return the 0.0.
 /// When the args length is 1, return the first value.
-#[pyfunction(args = "*")]
-#[pyo3(text_signature = "(*args)")]
-fn subtract(args: &PyTuple) -> f64 {
-    if args.len() == 0 {
+#[pyfunction]
+#[pyo3(signature = (*py_args))]
+fn subtract(py_args: &PyTuple) -> f64 {
+    if py_args.len() == 0 {
         return 0.0;
     }
 
-    let slice = args.as_slice();
+    let slice = py_args.as_slice();
     let mut result: f64 = slice[0].extract().unwrap();
     let mut index: usize = 1;
-    while index < args.len() {
+    while index < py_args.len() {
         result -= slice[index].extract::<f64>().unwrap();
 
         index += 1;
@@ -45,15 +45,15 @@ fn subtract(args: &PyTuple) -> f64 {
 ///
 /// When the args is empty, return the 0.0.
 /// When the args length is 1, return the first value.
-#[pyfunction(args = "*")]
-#[pyo3(text_signature = "(*args)")]
-fn multiply(args: &PyTuple) -> f64 {
-    if args.len() == 0 {
+#[pyfunction]
+#[pyo3(signature = (*py_args))]
+fn multiply(py_args: &PyTuple) -> f64 {
+    if py_args.len() == 0 {
         return 0.0;
     }
 
     let mut result: f64 = 1.0;
-    for item in args.as_slice() {
+    for item in py_args.as_slice() {
         result *= item.extract::<f64>().unwrap();
     }
     return result;
@@ -63,17 +63,17 @@ fn multiply(args: &PyTuple) -> f64 {
 ///
 /// When the args is empty, return the 0.0.
 /// When the args length is 1, return the first value.
-#[pyfunction(args = "*")]
-#[pyo3(text_signature = "(*args)")]
-fn divide(args: &PyTuple) -> Result<f64, PyErr> {
-    if args.len() == 0 {
+#[pyfunction]
+#[pyo3(signature = (*py_args))]
+fn divide(py_args: &PyTuple) -> Result<f64, PyErr> {
+    if py_args.len() == 0 {
         return Ok(0.0);
     }
 
-    let slice = args.as_slice();
+    let slice = py_args.as_slice();
     let mut result: f64 = slice[0].extract().unwrap();
     let mut index: usize = 1;
-    while index < args.len() {
+    while index < py_args.len() {
         let number = slice[index].extract::<f64>().unwrap();
         if number == 0.0 {
             return Err(ZeroDivisionError::new_err("Division by zero"));
